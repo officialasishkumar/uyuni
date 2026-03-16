@@ -121,18 +121,16 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
     return this.props.isVisibleByCriteria?.() ? (
       <div
         id={this.props.id}
-        className={this.isVisible() ? "formula-content-section-open" : "formula-content-section-closed"}
+        className={"second-level"}
       >
-        <div className="group-heading">
-          <SectionToggle setVisible={this.setVisible} isVisible={this.isVisible}>
-            <h4>
-              <Highlight
-                enabled={isFiltered(this.props.criteria)}
-                text={this.props.element.$name}
-                highlight={this.props.criteria}
-              />
-            </h4>
-          </SectionToggle>
+        <div className="group-heading test-level">
+          <h4>
+    <Highlight
+      enabled={isFiltered(this.props.criteria)}
+      text={this.props.element.$name}
+      highlight={this.props.criteria}
+    />
+  </h4>
           <i
             className="fa fa-plus"
             id={this.props.id + "#add_item"}
@@ -146,7 +144,7 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
           ></i>
         </div>
         <div>
-          {this.state.visible ? (
+          
             <Fragment>
               {"$help" in this.props.element ? <p>{this.props.element.$help}</p> : null}
               <Component
@@ -161,7 +159,7 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
                 formulaForm={this.props.formulaForm}
               />
             </Fragment>
-          ) : null}
+        
         </div>
       </div>
     ) : null;
@@ -192,7 +190,7 @@ class EditPrimitiveGroup extends Component<EditPrimitiveGroupProps> {
             *
           </span>
         ) : null}
-        <HelpIcon text={this.props.element["$help"]} />
+        <div className="col-lg-3 help-icon"><HelpIcon text={this.props.element["$help"]} /></div>
       </Fragment>
     );
   };
@@ -356,10 +354,11 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
           <span className="required-form-field"> *</span>:
         </label>
         <div className="col-lg-6">{innerHTML}</div>
-        <i
+        {/* Remove this? */}
+        {/* <i
           className="fa fa-question-circle"
           title={t("This field is used as a 'key' identifier in the resulting pillar data.")}
-        ></i>
+        ></i> */}
       </div>
     );
   }
@@ -420,7 +419,7 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
           key={id}
           className={this.isVisible(i) ? "formula-content-section-open" : "formula-content-section-closed"}
         >
-          <div className="group-heading">
+          <div className={`group-heading `}>
             <SectionToggle index={i} setVisible={this.setVisible} isVisible={this.isVisible}>
               <h4>{this.generateItemName(i)}</h4>
             </SectionToggle>

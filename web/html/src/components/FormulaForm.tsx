@@ -336,9 +336,10 @@ class FormulaForm extends Component<Props, State> {
               <BootstrapPanel
                 title={capitalize(get(this.state.formulaName, t("Unnamed")))}
                 buttons={
-                  <div>
-                    {showAllButton} | {hideAllButton}
-                  </div>
+                  // <div>
+                  //   {showAllButton} | {hideAllButton}
+                  // </div>
+                  <>test</>
                 }
               >
                 <div className="formula-content">

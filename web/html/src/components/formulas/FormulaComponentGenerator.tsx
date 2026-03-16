@@ -204,6 +204,7 @@ export function generateFormulaComponentForId(
         setSectionsExpanded={formulaForm.props.setSectionsExpanded}
         isVisibleByCriteria={() => isVisibleByCriteria(element, formulaForm.props.searchCriteria)}
         criteria={formulaForm.props.searchCriteria}
+        level={0 + 1}
       >
         {generateChildrenFormItems(element, value, formulaForm, id, isDisabled)}
       </Group>
@@ -416,14 +417,14 @@ function defaultWrapper(elementName, required, element, help = null) {
     required,
     <Fragment>
       <div className="col-lg-6">{element}</div>
-      <HelpIcon text={help} />
+      <div className="col-lg-3 help-icon"><HelpIcon text={help} /></div>
     </Fragment>
   );
 }
 
 function wrapFormGroupWithLabel(element_name: string, required?: boolean, innerHTML?: ReactNode) {
   return (
-    <div className="form-group" key={element_name}>
+    <div className="form-group test" key={element_name}>
       {wrapLabel(element_name, required)}
       {innerHTML}
     </div>
