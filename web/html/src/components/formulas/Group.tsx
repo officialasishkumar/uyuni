@@ -42,6 +42,7 @@ const Group = (props: Props) => {
   return props.isVisibleByCriteria?.() ? (
     <div
       className={`
+        level-${level}
         group-level-${level} 
         ${visible ? "formula-content-section-open" : "formula-content-section-closed"}
       `}

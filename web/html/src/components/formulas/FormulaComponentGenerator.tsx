@@ -75,10 +75,11 @@ export function generateFormulaComponent(
   formulaForm: any,
   parents?: any,
   wrapper?: any,
-  disabled = false
+  disabled = false,
+  level = 1
 ) {
   const id = (parents ? parents + "#" : "") + element.$id;
-  return generateFormulaComponentForId(element, value, formulaForm, id, wrapper, disabled);
+  return generateFormulaComponentForId(element, value, formulaForm, id, wrapper, disabled, level);
 }
 
 export function generateFormulaComponentForId(
@@ -87,7 +88,8 @@ export function generateFormulaComponentForId(
   formulaForm: any,
   id,
   wrapper,
-  disabled = false
+  disabled = false,
+  level = 1
 ) {
   wrapper = get(wrapper, defaultWrapper);
 
@@ -204,12 +206,12 @@ export function generateFormulaComponentForId(
         setSectionsExpanded={formulaForm.props.setSectionsExpanded}
         isVisibleByCriteria={() => isVisibleByCriteria(element, formulaForm.props.searchCriteria)}
         criteria={formulaForm.props.searchCriteria}
-        level={0 + 1}
+        level={level}
       >
-        {generateChildrenFormItems(element, value, formulaForm, id, isDisabled)}
+        {generateChildrenFormItems(element, value, formulaForm, id, isDisabled, level + 1)}
       </Group>
     );
-  } else if (element.$type === "namespace") return generateChildrenFormItems(element, value, formulaForm, id);
+  } else if (element.$type === "namespace") return generateChildrenFormItems(element, value, formulaForm, id, isDisabled, level);
   else if (element.$type === "edit-group") {
     return (
       <EditGroup
@@ -223,6 +225,7 @@ export function generateFormulaComponentForId(
         setSectionsExpanded={formulaForm.props.setSectionsExpanded}
         isVisibleByCriteria={() => isVisibleByCriteria(element, formulaForm.props.searchCriteria)}
         criteria={formulaForm.props.searchCriteria}
+        level={level}
       />
     );
   } else if (element.$type === "select")
@@ -389,12 +392,12 @@ function isVisibleByCriteria(element: any, criteria: string) {
   );
 }
 
-function generateChildrenFormItems(element, value, formulaForm, id, disabled = false) {
+function generateChildrenFormItems(element, value, formulaForm, id, disabled = false, level = 1) {
   const child_items: ReactNode[] = [];
   for (const child_name in element) {
     if (child_name.startsWith("$")) continue;
     child_items.push(
-      generateFormulaComponent(element[child_name], value[child_name], formulaForm, id, undefined, disabled)
+      generateFormulaComponent(element[child_name], value[child_name], formulaForm, id, undefined, disabled, level)
     );
   }
   return child_items;
@@ -417,14 +420,14 @@ function defaultWrapper(elementName, required, element, help = null) {
     required,
     <Fragment>
       <div className="col-lg-6">{element}</div>
-      <div className="col-lg-3 help-icon"><HelpIcon text={help} /></div>
+      {elementName !== help && <div className="col-lg-3 help-icon"><HelpIcon text={help} /></div>}
     </Fragment>
   );
 }
 
 function wrapFormGroupWithLabel(element_name: string, required?: boolean, innerHTML?: ReactNode) {
   return (
-    <div className="form-group test" key={element_name}>
+    <div className="form-group" key={element_name}>
       {wrapLabel(element_name, required)}
       {innerHTML}
     </div>

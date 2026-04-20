@@ -10,6 +10,10 @@
     display: inline-block;
 }
 
+:global(.group-heading h5) {
+    display: inline-block;
+}
+
 :global(.group-heading > .fa-minus) {
     position: absolute;
     right: 10px;
@@ -22,10 +26,15 @@
     right: 10px;
     top: 13px;
     cursor: pointer;
+}
+
+:global(.help-icon) {
+    width: 50px!important;
 }
 
 :global(.help-icon > i) {
     vertical-align: -webkit-baseline-middle;
+    width: 50px;
 }
 
 :global(.group-heading > .fa-plus) {
@@ -38,6 +47,25 @@
 :global(.group-heading > .fa-plus[disabled]) {
     opacity: 0.65;
     cursor: not-allowed;
+}
+
+:global(.formula-inline-add-button) {
+    margin-left: 8px;
+    min-width: 34px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+:global(.formula-inline-delete-button) {
+    margin-left: 8px;
+    min-width: 34px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+:global(.formula-inline-heading-add-button) {
+    margin-left: 12px;
+    vertical-align: middle;
 }
 
 :global(.group-heading .fa-angle-up) {
@@ -82,6 +110,69 @@
     border-top: 1px solid #dcddde;
     padding-left: 10px
 }
+:global(.second-level ) {
+    border-top: 1px solid #dcddde;
+    margin-bottom: 16px;
+}
 
+:global(.edit-dictionary-group-item) {
+    /* background-color: #fff; */
+    border-bottom: 1px solid #000;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+}
 
+:global(.edit-dictionary-group-item .edit-dictionary-group-item) {
+    /* background-color: #fff; */
+    border-bottom: 1px solid red;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+}
 
+:global(.edit-dictionary-group-item .test) {
+    color: blue;
+    margin-left: 24px;
+    font-size: 14px;
+}
+
+:global(.edit-dictionary-group-item .edit-dictionary-group-item .group-heading ) {
+    color: green;
+    margin-left: 32px;
+    font-size: 14px;
+    background: transparent;
+}
+
+:global( .level-1 ) {
+    border-top: 1px solid #ddd;
+    margin-top: 24px;
+    /* background-color: aqua; */
+}
+
+:global( .level-2 ) {
+    /* border-top: 1px solid #ddd;
+    margin-top: 24px; */
+    /* background-color: rgb(209, 144, 204); */
+}
+
+:global( .level-3 ) {
+    /* border-top: 1px solid #ddd;
+    margin-top: 24px; */
+    /* background-color: rgb(109, 255, 138); */
+}
+
+:global(.edit-dictionary-group-item .test2) {
+    color: red;
+    margin-left: 8px;
+}
+
+:global(.edit-dictionary-group-item .section-header) {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+:global(.edit-dictionary-group-item .section-header .line) {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}

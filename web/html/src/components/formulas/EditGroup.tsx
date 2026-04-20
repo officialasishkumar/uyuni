@@ -2,6 +2,7 @@ import "./formula-form.css";
 
 import { Component, Fragment } from "react";
 
+import { Button } from "components/buttons";
 import { productName } from "core/user-preferences";
 
 import { SectionState } from "components/FormulaForm";
@@ -28,6 +29,7 @@ type EditGroupProps = {
   id: string;
   key: any;
   disabled?: boolean;
+  level?: number;
   value: any;
   formulaForm: any;
   element: ElementDefinition;
@@ -41,6 +43,16 @@ type EditGroupState = {
   visible: boolean;
 };
 
+type InlineAddButtonProps = {
+  className?: string;
+};
+
+type InlineDeleteButtonProps = {
+  className?: string;
+  disabled?: boolean;
+  onClick: () => void;
+};
+
 /*
  * Base class for edit-group.
  * Based on the edit-group data, the corresponing shape of component is used.
@@ -51,6 +63,12 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
     this.state = {
       visible: props.sectionsExpanded !== SectionState.Collapsed,
     };
+  }
+
+  componentDidMount() {
+    if (Array.isArray(this.props.value) && this.props.value.length === 0 && !this.isDisabled()) {
+      this.handleAddItem();
+    }
   }
 
   componentDidUpdate(prevProps: Readonly<EditGroupProps>) {
@@ -105,9 +123,58 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
     this.props.setSectionsExpanded(SectionState.Mixed);
   };
 
+  renderAddButton = (className = "btn btn-default") => (
+    <button
+      className={className}
+      type="button"
+      data-bs-toggle="tooltip"
+      title={
+        this.props.element.$maxItems! <= this.props.value.length
+          ? "Max number of items reached"
+          : `Add ${this.props.element.$name}`
+      }
+      onClick={() => this.handleAddItem()}
+      disabled={this.props.element.$maxItems! <= this.props.value.length || this.props.disabled}
+    >
+      <i className="fa fa-plus" /> {this.props.element.$name}
+    </button>
+  );
+
+  renderInlineAddButton = ({ className = "btn btn-default formula-inline-add-button" }: InlineAddButtonProps = {}) => (
+    <button
+      className={className}
+      type="button"
+      data-bs-toggle="tooltip"
+      title={
+        this.props.element.$maxItems! <= this.props.value.length
+          ? "Max number of items reached"
+          : `Add ${this.props.element.$name}`
+      }
+      onClick={() => this.handleAddItem()}
+      disabled={this.props.element.$maxItems! <= this.props.value.length || this.props.disabled}
+    >
+      <i className="fa fa-plus" />
+    </button>
+  );
+
+  renderInlineDeleteButton = ({
+    className = "btn btn-tertiary formula-inline-delete-button",
+    disabled = false,
+    onClick,
+  }: InlineDeleteButtonProps) => (
+    <Button className={className} title="Remove item" handler={onClick} disabled={disabled} icon="fa-times"/>
+
+  );
+
   render() {
     const element = this.props.element;
     const subType = getEditGroupSubtype(element);
+    const showBottomAddButton =
+      subType === EditGroupSubtype.LIST_OF_DICTIONARIES ||
+      subType === EditGroupSubtype.DICTIONARY_OF_DICTIONARIES;
+    const isEditDictionaryGroup =
+      subType === EditGroupSubtype.LIST_OF_DICTIONARIES ||
+      subType === EditGroupSubtype.DICTIONARY_OF_DICTIONARIES;
 
     let Component;
     if (subType === EditGroupSubtype.PRIMITIVE_LIST) {
@@ -121,46 +188,48 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
     return this.props.isVisibleByCriteria?.() ? (
       <div
         id={this.props.id}
-        className={"second-level"}
+        className={`level-${this.props.level ?? 1}`}
       >
-        <div className="group-heading test-level">
+        {/* <div className="group-heading test-level">
           <h4>
-    <Highlight
-      enabled={isFiltered(this.props.criteria)}
-      text={this.props.element.$name}
-      highlight={this.props.criteria}
-    />
-  </h4>
-          <i
-            className="fa fa-plus"
-            id={this.props.id + "#add_item"}
-            data-bs-toggle="tooltip"
-            title={
-              this.props.element.$maxItems! <= this.props.value.length ? "Max number of items reached" : "Add Item"
-            }
-            /* @ts-expect-error: The property `disabled` doesn't exist on the `<i>` tag, but this was here historically */
-            disabled={this.props.element.$maxItems! <= this.props.value.length || this.props.disabled}
-            {...DEPRECATED_onClick(this.handleAddItem)}
-          ></i>
+          <Highlight
+            enabled={isFiltered(this.props.criteria)}
+            text={this.props.element.$name}
+            highlight={this.props.criteria}
+          />
+        </h4>
+         
+        </div> */}
+        <div className="form-group-test">
+          <Fragment>
+            {"$help" in this.props.element ? 
+            <div class="section-header">
+              <h4 className="test">{this.props.element.$help}: </h4>
+              <div class="line"></div>
+            </div>
+            // <h4 className="test">{this.props.element.$help}: </h4> 
+            : null}
+            <Component
+              handleRemoveItem={this.handleRemoveItem}
+              isDisabled={this.isDisabled()}
+              id={this.props.id}
+              key={this.props.key}
+              level={this.props.level}
+              element={this.props.element}
+              value={this.props.value}
+              sectionsExpanded={this.props.sectionsExpanded}
+              setSectionsExpanded={this.props.setSectionsExpanded}
+              formulaForm={this.props.formulaForm}
+              renderInlineAddButton={showBottomAddButton ? undefined : this.renderInlineAddButton}
+              renderInlineDeleteButton={showBottomAddButton ? undefined : this.renderInlineDeleteButton}
+            />
+          </Fragment>
         </div>
-        <div>
-          
-            <Fragment>
-              {"$help" in this.props.element ? <p>{this.props.element.$help}</p> : null}
-              <Component
-                handleRemoveItem={this.handleRemoveItem}
-                isDisabled={this.isDisabled()}
-                id={this.props.id}
-                key={this.props.key}
-                element={this.props.element}
-                value={this.props.value}
-                sectionsExpanded={this.props.sectionsExpanded}
-                setSectionsExpanded={this.props.setSectionsExpanded}
-                formulaForm={this.props.formulaForm}
-              />
-            </Fragment>
-        
-        </div>
+        {showBottomAddButton ? (
+          <div className="offset-lg-3 col-lg-3">
+            {this.renderAddButton( "btn btn-default")}
+          </div>
+        ) : null}
       </div>
     ) : null;
   }
@@ -169,10 +238,13 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
 type EditPrimitiveGroupProps = {
   id: string;
   value: any;
+  level?: number;
   element: ElementDefinition;
   formulaForm: any;
   isDisabled?: boolean;
   handleRemoveItem: (...args: any[]) => any;
+  renderInlineAddButton?: (props?: InlineAddButtonProps) => React.ReactNode;
+  renderInlineDeleteButton?: (props: InlineDeleteButtonProps) => React.ReactNode;
 };
 
 /*
@@ -190,13 +262,19 @@ class EditPrimitiveGroup extends Component<EditPrimitiveGroupProps> {
             *
           </span>
         ) : null}
-        <div className="col-lg-3 help-icon"><HelpIcon text={this.props.element["$help"]} /></div>
+        <div className="col-lg-1 help-icon">
+          <HelpIcon text={this.props.element["$help"]} />
+        </div>
       </Fragment>
     );
   };
 
   render() {
     const elements: React.ReactNode[] = [];
+    const itemIndexes = Object.keys(this.props.value).filter((i) => i !== "$meta");
+    const lastItemIndex = itemIndexes[itemIndexes.length - 1];
+    const canRemove = this.props.element.$minItems! < itemIndexes.length && !this.props.isDisabled;
+
     for (const i in this.props.value) {
       if (i === "$meta") {
         continue;
@@ -204,33 +282,43 @@ class EditPrimitiveGroup extends Component<EditPrimitiveGroupProps> {
       const id = this.props.id + "#" + i;
       elements.push(
         <div className="form-group" id={id} key={id}>
+          <div className="col-lg-3 control-label"></div>
           {generateFormulaComponentForId(
             this.props.element.$prototype,
             this.props.value[i],
             this.props.formulaForm,
             id,
             this.simpleWrapper,
-            this.props.isDisabled
+            this.props.isDisabled,
+            this.props.level
           )}
-          <RemoveButton
-            minItems={this.props.element.$minItems!}
-            currentLength={this.props.value.length}
-            handleRemoveItem={() => this.props.handleRemoveItem(i)}
-          />
+          {i === lastItemIndex && this.props.renderInlineAddButton
+            ? this.props.renderInlineAddButton({ className: "btn btn-default formula-inline-add-button" })
+            : null}
+          {i !== lastItemIndex && this.props.renderInlineDeleteButton
+            ? this.props.renderInlineDeleteButton({
+                className: "btn btn-tertiary formula-inline-delete-button",
+                disabled: !canRemove,
+                onClick: () => this.props.handleRemoveItem(i),
+              })
+            : null}
         </div>
       );
     }
-    return <div id={this.props.id + "$elements"}>{elements}</div>;
+    return <div id={this.props.id + "$elements duplicateEl"}>{elements}</div>;
   }
 }
 
 type EditPrimitiveDictionaryGroupProps = {
   id: string;
   value: any;
+  level?: number;
   element: ElementDefinition;
   formulaForm: any;
   isDisabled?: boolean;
   handleRemoveItem: (...args: any[]) => any;
+  renderInlineAddButton?: (props?: InlineAddButtonProps) => React.ReactNode;
+  renderInlineDeleteButton?: (props: InlineDeleteButtonProps) => React.ReactNode;
 };
 
 /*
@@ -252,6 +340,9 @@ class EditPrimitiveDictionaryGroup extends Component<EditPrimitiveDictionaryGrou
 
   render() {
     const elements: React.ReactNode[] = [];
+    const itemIndexes = Object.keys(this.props.value).filter((i) => i !== "$meta");
+    const lastItemIndex = itemIndexes[itemIndexes.length - 1];
+    const canRemove = this.props.element.$minItems! < itemIndexes.length && !this.props.isDisabled;
 
     for (const i in this.props.value) {
       if (i === "$meta") {
@@ -266,7 +357,8 @@ class EditPrimitiveDictionaryGroup extends Component<EditPrimitiveDictionaryGrou
             this.props.formulaForm,
             id + "#0",
             this.pairElementWrapper(this.props.element.$prototype.$key.$name),
-            this.props.isDisabled
+            this.props.isDisabled,
+            this.props.level
           )}
           {generateFormulaComponentForId(
             this.props.element.$prototype,
@@ -274,13 +366,19 @@ class EditPrimitiveDictionaryGroup extends Component<EditPrimitiveDictionaryGrou
             this.props.formulaForm,
             id + "#1",
             this.pairElementWrapper(get(this.props.element.$prototype.$name, "Value")),
-            this.props.isDisabled
+            this.props.isDisabled,
+            this.props.level
           )}
-          <RemoveButton
-            minItems={this.props.element.$minItems!}
-            currentLength={this.props.value.length}
-            handleRemoveItem={() => this.props.handleRemoveItem(i)}
-          />
+          {i === lastItemIndex && this.props.renderInlineAddButton
+            ? this.props.renderInlineAddButton({ className: "btn btn-default formula-inline-add-button" })
+            : null}
+          {i !== lastItemIndex && this.props.renderInlineDeleteButton
+            ? this.props.renderInlineDeleteButton({
+                className: "btn btn-default formula-inline-delete-button",
+                disabled: !canRemove,
+                onClick: () => this.props.handleRemoveItem(i),
+              })
+            : null}
         </div>
       );
     }
@@ -288,37 +386,17 @@ class EditPrimitiveDictionaryGroup extends Component<EditPrimitiveDictionaryGrou
   }
 }
 
-type RemoveButtonProps = {
-  minItems: number;
-  currentLength: number;
-  handleRemoveItem: (...args: any[]) => any;
-};
-
-class RemoveButton extends Component<RemoveButtonProps> {
-  render() {
-    return (
-      <button
-        className="btn btn-default"
-        type="button"
-        title={this.props.minItems >= this.props.currentLength ? "Min number of items reached" : "Remove item"}
-        onClick={() => this.props.handleRemoveItem()}
-        disabled={this.props.minItems >= this.props.currentLength}
-      >
-        <i className="fa fa-minus" /> Remove
-      </button>
-    );
-  }
-}
-
 type EditDictionaryGroupProps = {
   id: string;
   element: ElementDefinition;
+  level?: number;
   value: any;
   isDisabled?: boolean;
   formulaForm: any;
   sectionsExpanded: SectionState;
   setSectionsExpanded: (SectionState) => void;
   handleRemoveItem: (...args: any[]) => any;
+  renderInlineAddButton?: (props?: InlineAddButtonProps) => React.ReactNode;
 };
 
 type EditDictionaryGroupState = {
@@ -392,6 +470,8 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
 
   render() {
     const elements: React.ReactNode[] = [];
+    const itemIndexes = Object.keys(this.props.value).filter((i) => i !== "$meta");
+    const lastItemIndex = itemIndexes[itemIndexes.length - 1];
     for (const i in this.props.value) {
       if (i === "$meta") {
         continue;
@@ -408,7 +488,8 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
             this.props.formulaForm,
             id,
             element_name === "$key" ? this.wrapKeyGroup : undefined,
-            this.props.isDisabled
+            this.props.isDisabled,
+            (this.props.level ?? 1) + 1
           )
         );
       }
@@ -417,12 +498,15 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
         <div
           id={id}
           key={id}
-          className={this.isVisible(i) ? "formula-content-section-open" : "formula-content-section-closed"}
+          className={`edit-dictionary-group-item ${
+            this.isVisible(i) ? "formula-content-section-open" : "formula-content-section-closed"
+          }`}
         >
           <div className={`group-heading `}>
             <SectionToggle index={i} setVisible={this.setVisible} isVisible={this.isVisible}>
-              <h4>{this.generateItemName(i)}</h4>
+              <h5>{this.generateItemName(i)}</h5>
             </SectionToggle>
+            {/* <h4 className="test2">{this.generateItemName(i)}</h4> */}
             <i
               className="fa fa-minus"
               title={
@@ -432,8 +516,14 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
               disabled={this.props.element.$minItems! >= this.props.value.length || this.props.isDisabled}
               {...DEPRECATED_onClick(() => this.props.handleRemoveItem(i))}
             />
+            {i === lastItemIndex && this.props.renderInlineAddButton
+              ? this.props.renderInlineAddButton({
+                  className: "btn btn-default btn-sm formula-inline-add-button formula-inline-heading-add-button",
+                })
+              : null}
           </div>
           <div>{this.state.visibility.get(i) !== false ? item_elements : null}</div>
+          
         </div>
       );
     }
