@@ -89,7 +89,7 @@ export function generateFormulaComponentForId(
   id,
   wrapper,
   disabled = false,
-  level = 1
+  level = 0
 ) {
   wrapper = get(wrapper, defaultWrapper);
 
@@ -246,20 +246,19 @@ export function generateFormulaComponentForId(
       element.$help
     );
   else if (element.$type === "boolean")
-    return wrapper(
+    return wrapCheckboxFormGroup(
       element.$name,
+      id,
       required,
-      <div className="checkbox">
-        <input
-          type="checkbox"
-          onChange={formulaForm.handleChange}
-          name={element.$name}
-          id={id}
-          title={element.$help}
-          disabled={isDisabled}
-          checked={value}
-        />
-      </div>,
+      <input
+        type="checkbox"
+        onChange={formulaForm.handleChange}
+        name={element.$name}
+        id={id}
+        title={element.$help}
+        disabled={isDisabled}
+        checked={value}
+      />,
       element.$help
     );
   else if (element.$type === "textarea")
@@ -440,6 +439,25 @@ function wrapLabel(text: ReactNode, required?: boolean, label_for?: string) {
       {text}
       {required ? <span className="required-form-field"> *</span> : null}:
     </label>
+  );
+}
+
+function wrapCheckboxFormGroup(elementName: string, id: string, required?: boolean, input?: ReactNode, help?: ReactNode) {
+  return (
+    <div className="form-group" key={elementName}>
+      <div className="col-lg-3 control-label"></div>
+      <div className="col-lg-6">
+        <div className="checkbox">
+          <label htmlFor={id}>
+            {input}
+            {" "}
+            {elementName}
+            {required ? <span className="required-form-field"> *</span> : null}
+          </label>
+          {elementName !== help && <span className="help-icon-checkbox"><HelpIcon text={help} /></span>}
+        </div>
+      </div>
+    </div>
   );
 }
 

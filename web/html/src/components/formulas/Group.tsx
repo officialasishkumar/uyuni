@@ -21,7 +21,6 @@ type Props = {
 const Group = (props: Props) => {
   const [visible, setVisible] = useState(props.sectionsExpanded !== SectionState.Collapsed);
   const level = props.level ?? 0;
-  const isTopLevel = level === 1;
 
   useEffect(() => {
     if (props.sectionsExpanded !== SectionState.Mixed) {
@@ -41,14 +40,10 @@ const Group = (props: Props) => {
 
   return props.isVisibleByCriteria?.() ? (
     <div
-      className={`
-        level-${level}
-        group-level-${level} 
-        ${visible ? "formula-content-section-open" : "formula-content-section-closed"}
-      `}
+      className={`level-${level}`}
     >
-      <SectionToggle setVisible={setVisibility} isVisible={isVisible}>
-        <h4 id={props.id} key={props.id}>
+      {/* <SectionToggle setVisible={setVisibility} isVisible={isVisible}> */}
+        <h5 id={props.id} key={props.id}>
           {isFiltered(props.criteria) ? (
             <Highlight
               enabled={isFiltered(props.criteria)}
@@ -58,15 +53,15 @@ const Group = (props: Props) => {
           ) : (
             props.header
           )}
-        </h4>
-      </SectionToggle>
+        </h5>
+      {/* </SectionToggle> */}
       <div>
-        {visible ? (
+        
           <Fragment>
             {props.help ? <p>{props.help}</p> : null}
             {props.children}
           </Fragment>
-        ) : null}
+        
       </div>
     </div>
   ) : null;

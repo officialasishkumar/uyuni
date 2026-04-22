@@ -334,23 +334,30 @@ class FormulaForm extends Component<Props, State> {
                 </div>
               </SectionToolbar>
               <BootstrapPanel
-                title={capitalize(get(this.state.formulaName, t("Unnamed")))}
-                buttons={
-                  // <div>
-                  //   {showAllButton} | {hideAllButton}
-                  // </div>
-                  <>test</>
-                }
-              >
-                <div className="formula-content">
+                // title={capitalize(get(this.state.formulaName, t("Unnamed")))}
+                header={<div className="ms-4">
                   <SearchField
                     placeholder={t("Search by formula's group name")}
                     criteria={this.state.searchCriteria}
                     onSearch={(v) => this.setState({ searchCriteria: v, sectionsExpanded: SectionState.Expanded })}
                   />
-                  <hr />
+                </div>}
+                buttons={
+                  <div>
+                    {showAllButton} | {hideAllButton}
+                  </div>
+                }
+              >
+                <div className="formula-content">
+                  {/* {/* <SearchField
+                    placeholder={t("Search by formula's group name")}
+                    criteria={this.state.searchCriteria}
+                    onSearch={(v) => this.setState({ searchCriteria: v, sectionsExpanded: SectionState.Expanded })}
+                  /> */}
+                  {/* <hr /> */}
+                  <h3>{capitalize(get(this.state.formulaName, t("Unnamed")))}</h3>
                   <p>{text(this.state.formulaMetadata.description)}</p>
-                  <hr />
+                  {/* <hr /> */}
                   <FormulaFormRenderer />
                 </div>
               </BootstrapPanel>

@@ -1,0 +1,173 @@
+$invalid-bg: #fcf8e3;
+
+.group-heading {
+  position: relative;
+
+  h3,
+  h4,
+  h5 {
+    display: inline-block;
+  }
+
+  h4 {
+    cursor: pointer;
+  }
+
+  > .fa {
+    position: absolute;
+    right: 10px;
+    top: 13px;
+    cursor: pointer;
+
+    &[disabled] {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+  }
+
+  .fa-angle-up,
+  .fa-angle-down {
+    cursor: pointer;
+    font-weight: 600;
+  }
+}
+
+.help-icon {
+  width: 50px !important;
+
+  > i {
+    width: 50px;
+    vertical-align: -webkit-baseline-middle;
+  }
+}
+
+.help-icon-checkbox {
+  display: inline-flex;
+  margin-left: 15px;
+  vertical-align: text-top;
+}
+
+.formula-inline-add-button,
+.formula-inline-delete-button {
+  margin-left: 8px;
+  min-width: 34px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.formula-inline-heading-add-button {
+  margin-left: 12px;
+  vertical-align: middle;
+}
+
+.formula-content {
+  p {
+    color: #8e8e90;
+    margin-bottom: 18px;
+  }
+
+  h3 {
+    margin: 0;
+  }
+}
+
+input:invalid {
+  background-color: $invalid-bg;
+}
+
+.group-level-1 {
+  margin-left: 5px;
+  margin-bottom: 15px;
+}
+
+.level-1 {
+  border-top: 1px solid $eos-bc-gray-300;
+  padding-bottom: 16px;
+
+  > h5 {
+    background-color: orange;
+    margin: 15px 0 0;
+  }
+
+  .group-level-1 {
+    .ele2 {
+      border-bottom: 1px solid $eos-bc-gray-100;;
+      padding: 15px 0;
+
+      .group-level-2 .ele2 {
+        border-bottom: 0;
+        margin-bottom: 15px;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .level-2 .group-level-2 .section-header {
+    background-color: green;
+  }
+
+  .level-2 .ele2 .edit-dictionary-group-item:not(:last-of-type) {
+    border-bottom: 1px solid $eos-bc-gray-100;
+    margin-bottom: 0;
+  }
+
+  .group-level-1 .ele2 .edit-dictionary-group-item:not(:last-of-type) {
+    border-bottom: 1px solid $eos-bc-gray-100;;
+    margin-bottom: 15px;
+    // margin-left: 15px;
+    padding-bottom: 10px;
+  }
+}
+
+.ele2 .group-heading {
+  margin-left: 15px;
+}
+
+.group-level-2 {
+  .section-header {
+    border: 0;
+  }
+
+  .ele2 .line-top {
+    border-bottom: 1px solid $eos-bc-gray-100;
+  }
+}
+
+.edit-dictionary-group-item {
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0;
+
+    .line {
+      flex: 1;
+      height: 1px;
+      background: $eos-bc-gray-100;
+    }
+  }
+
+  .sub-heading {
+    // color: blue;
+    font-size: 13px;
+    margin-top: 0;
+    margin-left: 25px;
+  }
+
+  .edit-dictionary-group-item {
+    .group-heading {
+      margin-left: 30px;
+      font-size: 14px;
+      background: transparent;
+      // color: green;
+
+      h5 {
+        margin-top: 0;
+      }
+    }
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $eos-bc-gray-100;
+    }
+  }
+}

@@ -1,5 +1,3 @@
-import "./formula-form.css";
-
 import { Component, Fragment } from "react";
 
 import { Button } from "components/buttons";
@@ -123,7 +121,12 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
     this.props.setSectionsExpanded(SectionState.Mixed);
   };
 
-  renderAddButton = (className = "btn btn-default") => (
+  renderAddButton = (className = "btn btn-default") => {
+     const rawName = this.props.element.$name || "";
+
+    const cleanName = rawName.replace(/\s*\(.*?\)/, "");
+    console.log(cleanName)
+    return (
     <button
       className={className}
       type="button"
@@ -131,14 +134,14 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
       title={
         this.props.element.$maxItems! <= this.props.value.length
           ? "Max number of items reached"
-          : `Add ${this.props.element.$name}`
+          : `Add ${cleanName}`
       }
       onClick={() => this.handleAddItem()}
       disabled={this.props.element.$maxItems! <= this.props.value.length || this.props.disabled}
     >
-      <i className="fa fa-plus" /> {this.props.element.$name}
+      <i className="fa fa-plus" /> {cleanName}
     </button>
-  );
+  )};
 
   renderInlineAddButton = ({ className = "btn btn-default formula-inline-add-button" }: InlineAddButtonProps = {}) => (
     <button
@@ -200,11 +203,14 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
         </h4>
          
         </div> */}
-        <div className="form-group-test">
+        <div className={`group-level-${this.props.level ?? 1}`}>
           <Fragment>
             {"$help" in this.props.element ? 
             <div class="section-header">
-              <h4 className="test">{this.props.element.$help}: </h4>
+              
+              <h4 className="sub-heading">{this.props.element.$name}</h4>
+              {this.props.element.$name !== this.props.element.$help && <p>{this.props.element.$help}</p>}
+              
               <div class="line"></div>
             </div>
             // <h4 className="test">{this.props.element.$help}: </h4> 
@@ -226,8 +232,8 @@ class EditGroup extends Component<EditGroupProps, EditGroupState> {
           </Fragment>
         </div>
         {showBottomAddButton ? (
-          <div className="offset-lg-3 col-lg-3">
-            {this.renderAddButton( "btn btn-default")}
+          <div className={`offset-lg-3 col-lg-9 button-level-${this.props.level ?? 1}`}>
+            {this.renderAddButton((this.props.level ?? 1) === 2 ? "btn btn-tertiary" : "btn btn-default")}
           </div>
         ) : null}
       </div>
@@ -256,12 +262,13 @@ class EditPrimitiveGroup extends Component<EditPrimitiveGroupProps> {
   simpleWrapper = (name, required, element, help = null) => {
     return (
       <Fragment>
-        <div className="col-lg-3">{element}</div>
+        <div className="col-lg-3">{element}
         {required ? (
-          <span className="required-form-field" style={{ float: "left", paddingRight: "10px" }}>
+          <span>
             *
           </span>
         ) : null}
+        </div>
         <div className="col-lg-1 help-icon">
           <HelpIcon text={this.props.element["$help"]} />
         </div>
@@ -303,9 +310,10 @@ class EditPrimitiveGroup extends Component<EditPrimitiveGroupProps> {
               })
             : null}
         </div>
+
       );
     }
-    return <div id={this.props.id + "$elements duplicateEl"}>{elements}</div>;
+    return <div id={this.props.id + "$elements"} class="editPrimitiveGroup ele1">{elements}</div>;
   }
 }
 
@@ -382,7 +390,7 @@ class EditPrimitiveDictionaryGroup extends Component<EditPrimitiveDictionaryGrou
         </div>
       );
     }
-    return <div id={this.props.id + "$elements"}>{elements}</div>;
+    return <div id={this.props.id + "$elements ele3"}>{elements}</div>;
   }
 }
 
@@ -506,9 +514,9 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
             <SectionToggle index={i} setVisible={this.setVisible} isVisible={this.isVisible}>
               <h5>{this.generateItemName(i)}</h5>
             </SectionToggle>
-            {/* <h4 className="test2">{this.generateItemName(i)}</h4> */}
             <i
-              className="fa fa-minus"
+              className="fa fa-trash"
+              data-bs-toggle="tooltip"
               title={
                 this.props.element.$minItems! >= this.props.value.length ? "Min number of items reached" : "Remove item"
               }
@@ -523,11 +531,12 @@ class EditDictionaryGroup extends Component<EditDictionaryGroupProps, EditDictio
               : null}
           </div>
           <div>{this.state.visibility.get(i) !== false ? item_elements : null}</div>
-          
         </div>
       );
     }
-    return <div id={this.props.id + "$elements"}>{elements}</div>;
+    return <div id={this.props.id + "$elements"} className="ele2">
+      {elements}
+    </div>;
   }
 }
 
