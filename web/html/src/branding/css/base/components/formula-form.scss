@@ -49,10 +49,10 @@ $invalid-bg: #fcf8e3;
 
 .formula-inline-add-button,
 .formula-inline-delete-button {
-  margin-left: 8px;
+  // margin-left: 8px;
   min-width: 34px;
-  padding-left: 10px;
-  padding-right: 10px;
+  // padding-left: 10px;
+  // padding-right: 10px;
 }
 
 .formula-inline-heading-add-button {
@@ -91,7 +91,7 @@ input:invalid {
 
   .group-level-1 {
     .ele2 {
-      border-bottom: 1px solid $eos-bc-gray-100;;
+      border-bottom: 1px solid $eos-bc-gray-100;
       padding: 15px 0;
 
       .group-level-2 .ele2 {
@@ -102,17 +102,18 @@ input:invalid {
     }
   }
 
-  .level-2 .group-level-2 .section-header {
-    background-color: green;
+  .level-2 .editDictionaryGroup .edit-dictionary-group-item:not(:last-of-type) {
+    // border-bottom: 1px solid chocolate;
+    margin-bottom: 15px;
   }
 
-  .level-2 .ele2 .edit-dictionary-group-item:not(:last-of-type) {
-    border-bottom: 1px solid $eos-bc-gray-100;
-    margin-bottom: 0;
+  .level-1 .editDictionaryGroup .edit-dictionary-group-item:not(:last-of-type) {
+    // border-bottom: 1px solid chocolate;
+    margin-bottom: 15px;
   }
 
   .group-level-1 .ele2 .edit-dictionary-group-item:not(:last-of-type) {
-    border-bottom: 1px solid $eos-bc-gray-100;;
+    // border-bottom: 1px solid $eos-bc-gray-100;
     margin-bottom: 15px;
     // margin-left: 15px;
     padding-bottom: 10px;
@@ -138,7 +139,8 @@ input:invalid {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin: 20px 0;
+    // margin: 20px 0;
+    background-color: red;
 
     .line {
       flex: 1;
@@ -166,8 +168,95 @@ input:invalid {
       }
     }
 
-    &:not(:last-of-type) {
-      border-bottom: 1px solid $eos-bc-gray-100;
+    // &:not(:last-of-type) {
+    //   border-bottom: 1px solid $eos-bc-gray-100;
+    // }
+  }
+}
+
+// ==== NEW
+
+.level-1 {
+  .level-2 {
+    // background-color: antiquewhite;
+    // border-top: 1px solid $eos-bc-gray-300;
+    margin-top: 24px;
+
+    .group-heading h4 {
+      font-size: 13px;
+      color: green;
+      margin-top: 5px;
+      display: flex;
+      border-top: 1px solid green;
+      margin-left: 10px;
     }
+
+    .group-level-2 p {
+      margin-left: 10px;
+    }
+  }
+}
+
+// .level-2 {
+//   // background-color: antiquewhite;
+//   // border-top: 1px solid $eos-bc-gray-300;
+//   margin-top: 24px;
+
+//   .group-heading h4 {
+//     font-size: 13px;
+//     color: green;
+//     margin-top: 5px;
+//     display: flex;
+//     border-top: 1px solid green;
+//     margin-left: 10px;
+//   }
+
+//   .group-level-2 p {
+//     margin-left: 10px;
+//   }
+// }
+
+.group-test .level-2 .group-heading {
+  h4 {
+    font-size: 13px;
+    color: #000 !important;
+    margin-top: 5px;
+    display: flex;
+    margin-left: 10px;
+    border-top: 0 !important;
+  }
+}
+
+.group-test .level-3 {
+  // background-color: #fcf8e3;
+
+  .group-heading h4 {
+    margin-left: 30px !important;
+    color: blueviolet !important;
+    border: 0;
+    border-top: 2px solid blueviolet;
+  }
+}
+
+.editPrimitiveGroup {
+  // background-color: #f8f8f8;
+  // padding: 7px 0 4px 0;
+}
+
+.editPrimitiveDictionaryGroup {
+  // border: 2px solid red;
+}
+
+.editDictionaryGroup {
+  // border: 2px solid blue;
+  .group-heading {
+    margin-left: 10px;
+    color: chocolate;
+  }
+
+  .edit-dictionary-group-item:not(:first-of-type) h5 {
+    display: flex;
+    border-top: 1px solid chocolate;
+    margin-left: 10px;
   }
 }

@@ -76,10 +76,11 @@ export function generateFormulaComponent(
   parents?: any,
   wrapper?: any,
   disabled = false,
-  level = 1
+  level = 1,
+  collapsible = true
 ) {
   const id = (parents ? parents + "#" : "") + element.$id;
-  return generateFormulaComponentForId(element, value, formulaForm, id, wrapper, disabled, level);
+  return generateFormulaComponentForId(element, value, formulaForm, id, wrapper, disabled, level, collapsible);
 }
 
 export function generateFormulaComponentForId(
@@ -89,10 +90,11 @@ export function generateFormulaComponentForId(
   id,
   wrapper,
   disabled = false,
-  level = 0
+  level = 0,
+  collapsible = true
 ) {
   wrapper = get(wrapper, defaultWrapper);
-
+  console.log(element);
   const isDisabled =
     (formulaForm.props.scope !== element.$scope && element.$scope !== "system") ||
     ("$disabled" in element && evalExpression(id, element.$disabled, formulaForm)) ||
@@ -211,7 +213,8 @@ export function generateFormulaComponentForId(
         {generateChildrenFormItems(element, value, formulaForm, id, isDisabled, level + 1)}
       </Group>
     );
-  } else if (element.$type === "namespace") return generateChildrenFormItems(element, value, formulaForm, id, isDisabled, level);
+  } else if (element.$type === "namespace")
+    return generateChildrenFormItems(element, value, formulaForm, id, isDisabled, level);
   else if (element.$type === "edit-group") {
     return (
       <EditGroup
@@ -226,6 +229,7 @@ export function generateFormulaComponentForId(
         isVisibleByCriteria={() => isVisibleByCriteria(element, formulaForm.props.searchCriteria)}
         criteria={formulaForm.props.searchCriteria}
         level={level}
+        collapsible={collapsible}
       />
     );
   } else if (element.$type === "select")
@@ -391,12 +395,21 @@ function isVisibleByCriteria(element: any, criteria: string) {
   );
 }
 
-function generateChildrenFormItems(element, value, formulaForm, id, disabled = false, level = 1) {
+function generateChildrenFormItems(element, value, formulaForm, id, disabled = false, level = 1, collapsible = true) {
   const child_items: ReactNode[] = [];
   for (const child_name in element) {
     if (child_name.startsWith("$")) continue;
     child_items.push(
-      generateFormulaComponent(element[child_name], value[child_name], formulaForm, id, undefined, disabled, level)
+      generateFormulaComponent(
+        element[child_name],
+        value[child_name],
+        formulaForm,
+        id,
+        undefined,
+        disabled,
+        level,
+        collapsible
+      )
     );
   }
   return child_items;
@@ -419,7 +432,11 @@ function defaultWrapper(elementName, required, element, help = null) {
     required,
     <Fragment>
       <div className="col-lg-6">{element}</div>
-      {elementName !== help && <div className="col-lg-3 help-icon"><HelpIcon text={help} /></div>}
+      {elementName !== help && (
+        <div className="col-lg-3 help-icon">
+          <HelpIcon text={help} />
+        </div>
+      )}
     </Fragment>
   );
 }
@@ -442,19 +459,27 @@ function wrapLabel(text: ReactNode, required?: boolean, label_for?: string) {
   );
 }
 
-function wrapCheckboxFormGroup(elementName: string, id: string, required?: boolean, input?: ReactNode, help?: ReactNode) {
+function wrapCheckboxFormGroup(
+  elementName: string,
+  id: string,
+  required?: boolean,
+  input?: ReactNode,
+  help?: ReactNode
+) {
   return (
     <div className="form-group" key={elementName}>
       <div className="col-lg-3 control-label"></div>
       <div className="col-lg-6">
         <div className="checkbox">
           <label htmlFor={id}>
-            {input}
-            {" "}
-            {elementName}
+            {input} {elementName}
             {required ? <span className="required-form-field"> *</span> : null}
           </label>
-          {elementName !== help && <span className="help-icon-checkbox"><HelpIcon text={help} /></span>}
+          {elementName !== help && (
+            <span className="help-icon-checkbox">
+              <HelpIcon text={help} />
+            </span>
+          )}
         </div>
       </div>
     </div>
